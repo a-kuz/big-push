@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"noEmit": true,
+		"module": "esnext",
+		"allowSyntheticDefaultImports": true,
+		"target": "ESNext",
+		"lib": [
+			"ESNext"
+		],
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": true,
+		"paths": {
+			"~/*": [
+				"src/*"
+			]
+		},
+		"moduleResolution": "node",
+		"types": [
+			"@cloudflare/workers-types"
+		]
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

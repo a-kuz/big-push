@@ -1,0 +1,39 @@
+{
+	"name": "big-push-server",
+	"version": "1.0.0",
+	"private": true,
+	"description": "big-push-server",
+	"keywords": [],
+	"license": "MIT",
+	"author": {
+		"email": "a.kuz@outlook.com",
+		"name": "Aleksandr Kuznetsov",
+		"url": "https://a-kuznetsov.cc"
+	},
+	"main": "src/index.ts",
+	"module": "True",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@tsndr/cloudflare-worker-jwt": "^2.5.3"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20240502.0",
+		"@stylistic/eslint-plugin-ts": "^1.8.0",
+		"@types/service-worker-mock": "^2.0.4",
+		"@types/ws": "^8.5.10",
+		"@typescript-eslint/parser": "^5.62.0",
+		"axios": "^1.6.8",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-simple-import-sort": "^12.1.0",
+		"lorem-ipsum": "^2.0.8",
+		"prettier": "^3.2.5",
+		"prettier-eslint": "^16.3.0",
+		"typescript": "^5.4.5",
+		"vitest": "^1.6.0",
+		"wrangler": "^3.55.0",
+		"ws": "^8.17.0"
+	}
+}
