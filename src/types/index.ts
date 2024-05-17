@@ -34,8 +34,9 @@ export interface NewMessageEvent {
   missed: number
 }
 
-export interface Message {
+export interface QMessage {
   event: NewMessageEvent
-  aps: { title: string; body: string }
+  title: string
+  body: string
   deviceToken: string
 }
