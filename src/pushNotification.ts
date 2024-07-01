@@ -1,4 +1,4 @@
-import { P8Key, IOSNotification, NewMessageEvent } from './types'
+import { P8Key, IOSNotification, NewMessageEvent, Env } from './types'
 import { generateJWT } from './generateJWT'
 import { base64ToHex } from './base64ToHex'
 import { sendPushRequest } from './sendPushRequest'
@@ -9,8 +9,13 @@ export const pushNotification = async (
   data: NewMessageEvent,
   body: string,
   title?: string,
+  subtitle?: string,
+  badge?: number,
+	threadId?: string,
+  env: Env,
 ) => {
-  const pushEndpoint = 'https://api.push.apple.com/3/device/'
+  const pushEndpoint = 'https://api.push.apple.com:443/3/device/'
+  const sandboxPushEndpoint = 'https://api.sandbox.push.apple.com:443/3/device/'
   const p8Key: P8Key = {
     keyId: 'Z8D473D947',
     teamId: 'NZG926X62F',
@@ -19,9 +24,13 @@ export const pushNotification = async (
 
   const notification: IOSNotification = {
     aps: {
-      alert: { body, title },
+      alert: { body, title, subtitle },
       sound: 'default',
-      badge: 1,
+      badge,
+      category: 'message',
+      'mutable-content': 1,
+			'content-available': 1,
+			'thread-id': threadId
     },
     data,
   }
@@ -32,10 +41,28 @@ export const pushNotification = async (
       pushEndpoint + base64ToHex(deviceToken),
       jwt,
       notification,
+      env,
     )
 
-    if (!response.ok) {
-      throw new Error(`Push request failed with status: ${response.status}`)
+    if (!response.ok && env.SANDBOX) {
+      try {
+        const sandboxResponse = await sendPushRequest(
+          sandboxPushEndpoint + base64ToHex(deviceToken),
+          jwt,
+          notification,
+          env,
+        )
+
+        if (!sandboxResponse.ok) {
+          throw new Error(`Push request failed with status: ${response.status}`)
+        } else {
+          for (const h of response.headers.entries()) console.log(h[0], h[1])
+
+          console.log('Push notification sent')
+        }
+      } catch (error) {
+        console.error('Push notification error:', error)
+      }
     }
   } catch (error) {
     console.error('Push notification error:', error)

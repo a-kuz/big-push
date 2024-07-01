@@ -1,11 +1,13 @@
-name = "big-push-server"
+name = "big-push-server-stage"
 
 compatibility_date = "2024-05-11"
-
 
 
 main = "./src/index.ts"
 logpush = true
 
+[vars]
+APNS_TOPIC = "com.k2fintech.big-messenger-dev"
+SANDBOX = true
 [[queues.consumers]]
 queue = "push-queue"

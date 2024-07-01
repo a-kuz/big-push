@@ -7,10 +7,10 @@ export default {
     const privateKey = formatPrivateKey(env.P8)
 
     for (const message of batch.messages) {
-      const { event, deviceToken, body, title } = message.body
+      const { event, deviceToken, body, title, subtitle, badge, threadId } = message.body
 
       try {
-        await pushNotification(deviceToken, privateKey, event, body, title)
+        await pushNotification(deviceToken, privateKey, event, body, title, subtitle, badge, threadId, env)
         message.ack()
       } catch (error) {
         console.error('Failed to push notification:', error)

@@ -1,0 +1,12 @@
+name = "big-push-server-stage"
+
+compatibility_date = "2024-05-11"
+main = "./src/index.ts"
+logpush = true
+
+[vars]
+APNS_TOPIC = "com.k2fintech.big-messenger-stage"
+SANDBOX = false
+
+[[queues.consumers]]
+queue = "push-queue-stage"
