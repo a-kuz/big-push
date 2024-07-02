@@ -54,6 +54,7 @@ export const pushNotification = async (
         )
 
         if (!sandboxResponse.ok) {
+					for (const h of response.headers.entries()) console.log(h[0], h[1])
           throw new Error(`Push request failed with status: ${response.status}`)
         } else {
           for (const h of response.headers.entries()) console.log(h[0], h[1])

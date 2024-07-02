@@ -10,6 +10,7 @@ export default {
       const { event, deviceToken, body, title, subtitle, badge, threadId } = message.body
 
       try {
+				console.log(JSON.stringify(message))
         await pushNotification(deviceToken, privateKey, event, body, title, subtitle, badge, threadId, env)
         message.ack()
       } catch (error) {

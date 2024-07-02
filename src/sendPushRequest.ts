@@ -6,7 +6,7 @@ export const sendPushRequest = async (
   notification: IOSNotification,
   { APNS_TOPIC }: Env,
 ): Promise<Response> => {
-  console.log(notification)
+  console.log({url, jwt, notification, APNS_TOPIC})
   return fetch(url, {
     method: 'POST',
     headers: {
@@ -17,4 +17,5 @@ export const sendPushRequest = async (
 
     body: JSON.stringify(notification),
   })
+
 }
