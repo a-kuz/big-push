@@ -8,11 +8,12 @@ export const pushNotification = async (
   privateKey: string,
   data: NewMessageEvent,
   body: string,
+  env: Env,
   title?: string,
   subtitle?: string,
   badge?: number,
-	threadId?: string,
-  env: Env,
+  threadId?: string,
+  voip?: boolean
 ) => {
   const pushEndpoint = 'https://api.push.apple.com:443/3/device/'
   const sandboxPushEndpoint = 'https://api.sandbox.push.apple.com:443/3/device/'
@@ -22,28 +23,32 @@ export const pushNotification = async (
     privateKey,
   }
 
-  const notification: IOSNotification = {
+  const notification: IOSNotification = voip ? {
+    aps: {
+      alert: { body, title, subtitle }
+    },
+    ...data
+  } : {
     aps: {
       alert: { body, title, subtitle },
       sound: 'default',
       badge,
       category: 'message',
       'mutable-content': 1,
-			'content-available': 1,
-			'thread-id': threadId
+      'content-available': 1,
+      'thread-id': threadId
     },
     data,
   }
-
   try {
-    const jwt = await generateJWT(p8Key)
+    const jwt = await generateJWT(p8Key);
     const response = await sendPushRequest(
       pushEndpoint + base64ToHex(deviceToken),
       jwt,
       notification,
       env,
+      voip
     )
-
     if (!response.ok && env.SANDBOX) {
       try {
         const sandboxResponse = await sendPushRequest(
@@ -51,6 +56,7 @@ export const pushNotification = async (
           jwt,
           notification,
           env,
+          voip
         )
 
         if (!sandboxResponse.ok) {

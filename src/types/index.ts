@@ -13,7 +13,7 @@ export interface P8Key {
 
 export interface IOSNotification {
   aps: {
-    alert: {
+    alert?: {
       title?: string;
       subtitle?: string;
       body: string;
@@ -42,8 +42,10 @@ export interface IOSNotification {
   'apns-topic'?: string;
 }
 
+
 export interface NewMessageEvent {
   chatId: string
+  callId?: string
   sender?: string
   message?: string
   timestamp?: number
@@ -51,6 +53,11 @@ export interface NewMessageEvent {
   messageId: number
   clientMessageId: string
   missed: number
+
+  uid?: number
+  token?: string
+  appId?: string
+  
 }
 
 export interface QMessage {
@@ -63,4 +70,5 @@ export interface QMessage {
   sound?: string
   category?: 'message'
   threadId?: string
+  voip: boolean
 }
