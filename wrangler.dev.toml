@@ -11,3 +11,7 @@ APNS_TOPIC = "com.k2fintech.big-messenger-dev"
 SANDBOX = true
 [[queues.consumers]]
 queue = "push-queue"
+max_batch_size = 1
+max_batch_timeout = 0
+max_retries = 1
+max_concurrency = 10
