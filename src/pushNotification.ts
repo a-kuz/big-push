@@ -1,5 +1,5 @@
 import { P8Key, IOSNotification, NewMessageEvent, Env } from './types'
-import { generateJWT } from './generateJWT'
+import { jwt } from './generateJWT'
 import { base64ToHex } from './base64ToHex'
 import { sendPushRequest } from './sendPushRequest'
 
@@ -30,7 +30,7 @@ export const pushNotification = async (
     ...data
   } : {
     aps: {
-      alert: { body, title, subtitle },
+      alert: { body, title, subtitle, 'content-available': 1, },
       sound: 'default',
       badge,
       category: 'message',
@@ -41,10 +41,10 @@ export const pushNotification = async (
     data,
   }
   try {
-    const jwt = await generateJWT(p8Key);
+    const token = await jwt(p8Key);
     const response = await sendPushRequest(
       pushEndpoint + base64ToHex(deviceToken),
-      jwt,
+      token,
       notification,
       env,
       voip
@@ -53,7 +53,7 @@ export const pushNotification = async (
       try {
         const sandboxResponse = await sendPushRequest(
           sandboxPushEndpoint + base64ToHex(deviceToken),
-          jwt,
+          token,
           notification,
           env,
           voip

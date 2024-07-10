@@ -17,11 +17,12 @@ export interface IOSNotification {
       title?: string;
       subtitle?: string;
       body: string;
-      'title-loc-key'?: string;
+			'title-loc-key'?: string;
       'title-loc-args'?: string[];
       'action-loc-key'?: string;
       'loc-key'?: string;
       'loc-args'?: string[];
+      'content-available'?: number;
     };
     sound?: string;
     badge?: number;
