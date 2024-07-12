@@ -3,18 +3,7 @@ import { jwt } from './generateJWT'
 import { base64ToHex } from './base64ToHex'
 import { sendPushRequest } from './sendPushRequest'
 
-export const pushNotification = async (
-  deviceToken: string,
-  privateKey: string,
-  data: NewMessageEvent,
-  body: string,
-  env: Env,
-  title?: string,
-  subtitle?: string,
-  badge?: number,
-  threadId?: string,
-  voip?: boolean
-) => {
+export const silentPush = async (deviceToken: string, privateKey: string, env: Env) => {
   const pushEndpoint = 'https://api.push.apple.com:443/3/device/'
   const sandboxPushEndpoint = 'https://api.sandbox.push.apple.com:443/3/device/'
   const p8Key: P8Key = {
@@ -23,31 +12,20 @@ export const pushNotification = async (
     privateKey,
   }
 
-  const notification: IOSNotification = voip ? {
+  const notification: IOSNotification = {
     aps: {
-      alert: { body, title, subtitle }
+      'content-available': 1,
     },
-    ...data
-  } : {
-    aps: {
-      alert: { body, title, subtitle, },
-      badge,
-      category: 'message',
-      'mutable-content': 1,
-      'thread-id': threadId,
-      "target-content-id": data.clientMessageId,
-      "interruption-level": "time-sensitive"
-    },
-    data,
+    data: { chatId: "AI" },
   }
   try {
-    const token = await jwt(p8Key);
+    const token = await jwt(p8Key)
     const response = await sendPushRequest(
       pushEndpoint + base64ToHex(deviceToken),
       token,
       notification,
       env,
-      voip
+      false,
     )
     if (!response.ok && env.SANDBOX) {
       try {
@@ -56,11 +34,11 @@ export const pushNotification = async (
           token,
           notification,
           env,
-          voip
+          false
         )
 
         if (!sandboxResponse.ok) {
-					for (const h of response.headers.entries()) console.log(h[0], h[1])
+          for (const h of response.headers.entries()) console.log(h[0], h[1])
           throw new Error(`Push request failed with status: ${response.status}`)
         } else {
           for (const h of response.headers.entries()) console.log(h[0], h[1])

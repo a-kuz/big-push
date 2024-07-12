@@ -16,14 +16,14 @@ export interface IOSNotification {
     alert?: {
       title?: string;
       subtitle?: string;
-      body: string;
+      body?: string;
 			'title-loc-key'?: string;
       'title-loc-args'?: string[];
       'action-loc-key'?: string;
       'loc-key'?: string;
       'loc-args'?: string[];
-      'content-available'?: number;
     };
+    
     sound?: string;
     badge?: number;
     category?: string;
@@ -35,6 +35,7 @@ export interface IOSNotification {
     'relevance-score'?: number;
     'filter-criteria'?: string;
   };
+  "custom-data-key"?: string,
   data?: Record<string, any>;
   'collapse-id'?: string;
   'priority'?: 'high' | 'normal';
