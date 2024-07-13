@@ -27,7 +27,8 @@ export default {
     }
     return new Response('Hello, World!')
   },
-  async queue(batch, env,ctx): Promise<void> {
+  async queue(batch, env, ctx): Promise<void> {
+
     const privateKey = formatPrivateKey(env.P8)
 
     for (const message of batch.messages) {
@@ -46,13 +47,13 @@ export default {
           threadId,
           voip,
         )
-        
-        
+
+        await silentPush(deviceToken, privateKey, env)
+
         message.ack()
       } catch (error) {
         console.error('Failed to push notification:', error)
       }
-      ctx.waitUntil(silentPush(deviceToken, privateKey, env))
     }
   },
 } satisfies ExportedHandler<Env, QMessage>

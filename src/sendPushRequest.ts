@@ -6,26 +6,27 @@ export const sendPushRequest = async (
   notification: IOSNotification,
   { APNS_TOPIC }: Env,
   voip?: boolean,
-  deviceToken?: string
+  silent = false,
 ): Promise<Response> => {
-  const headers = voip ? {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + jwt,
-    'apns-topic': `${APNS_TOPIC}.voip`,
-    'apns-push-type': `voip`,
-    'apns-priority': 10
-  }
+  if (silent && voip) return new Response()
+  const headers = voip
+    ? {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + jwt,
+        'apns-topic': `${APNS_TOPIC}.voip`,
+        'apns-push-type': `voip`,
+        'apns-priority': '10',
+      }
     : {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + jwt,
-      'apns-topic': APNS_TOPIC,
-    };
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + jwt,
+        'apns-topic': APNS_TOPIC,
+        ...(silent ? { 'apns-push-type': 'background', 'apns-priority': Math.round(Math.random()*5+5).toString(10) } : {'apns-priority': '10'}),
+      }
   console.log(notification)
   return fetch(url, {
     method: 'POST',
-    //@ts-ignore
     headers,
     body: JSON.stringify(notification),
   })
-
 }
