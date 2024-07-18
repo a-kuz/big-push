@@ -5,7 +5,7 @@ export const sendPushRequest = async (
   jwt: string,
   notification: IOSNotification,
   { APNS_TOPIC }: Env,
-  voip?: boolean,
+  voip = false ,
   silent = false,
 ): Promise<Response> => {
   if (silent && voip) return new Response()
@@ -21,9 +21,9 @@ export const sendPushRequest = async (
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + jwt,
         'apns-topic': APNS_TOPIC,
-        ...(silent ? { 'apns-push-type': 'background', 'apns-priority': Math.round(Math.random()*5+5).toString(10) } : {'apns-priority': '10'}),
+        ...(silent ? { 'apns-push-type': 'background', 'apns-priority': Math.round(Math.random()*2+8).toString(10) } : {'apns-priority': '10',  'apns-push-type': 'alert'}),
       }
-  console.log(notification)
+  console.log(notification, {headers})
   return fetch(url, {
     method: 'POST',
     headers,

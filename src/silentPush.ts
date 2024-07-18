@@ -45,10 +45,12 @@ export const silentPush = async (deviceToken: string, privateKey: string, env: E
         logHeaders(sandboxResponse)
         
         if (!sandboxResponse.ok) {
+          
           for (const h of response.headers.entries()) console.log(h[0], h[1])
+          console.log('FAIL')
           return
         } else {
-          for (const h of response.headers.entries()) console.log(h[0], h[1])
+          //for (const h of response.headers.entries()) console.log(h[0], h[1])
 
           console.log('Push notification sent to sandbox')
           return

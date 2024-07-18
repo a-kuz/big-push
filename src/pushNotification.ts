@@ -17,11 +17,13 @@ export const pushNotification = async (
   voip?: boolean,
 ) => {
   const hexDeviceToken = base64ToHex(deviceToken)
-  const isSandBox = hexDeviceToken.length > 65
+  const isEmulator = hexDeviceToken.length > 65
   console.log('hexDeviceToken', hexDeviceToken)
-  const pushEndpoint = isSandBox
-    ? 'https://api.sandbox.push.apple.com:443/3/device/'
-    : 'https://api.push.apple.com:443/3/device/'
+  const sanboxEndpoint = 'https://api.sandbox.push.apple.com:443/3/device/'
+  const mainEndpoint = 'https://api.push.apple.com:443/3/device/'
+  const pushEndpoints = isEmulator
+    ? [sanboxEndpoint]
+    : [mainEndpoint, sanboxEndpoint]
 
   const p8Key: P8Key = {
     keyId: 'Z8D473D947',
@@ -42,20 +44,26 @@ export const pushNotification = async (
           sound: 'default',
           badge,
           category: 'message',
+          'mutable-content': 1,
           'thread-id': threadId,
         },
         data,
       }
   try {
     const token = await jwt(p8Key)
-    const response = await sendPushRequest(
-      pushEndpoint + base64ToHex(deviceToken),
-      token,
-      notification,
-      env,
-      voip,
-    )
-    logHeaders(response)
+    for (const pushEndpoint of pushEndpoints) {
+      console.log({ url: pushEndpoint + hexDeviceToken, token, notification })
+      const response = await sendPushRequest(
+        pushEndpoint + hexDeviceToken,
+        token,
+        notification,
+        env,
+        voip,
+      )
+      console.log({ok: response.ok, body : await response.text()})
+      logHeaders(response)
+      if (response.ok) break
+    }
   } catch (error) {
     console.error('Push notification error:', error)
   }

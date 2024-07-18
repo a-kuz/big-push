@@ -6,7 +6,7 @@ logpush = true
 
 [vars]
 APNS_TOPIC = "com.k2fintech.big-messenger-stage"
-SANDBOX = false
+SANDBOX = true
 
 [[queues.consumers]]
 queue = "push-queue-stage"

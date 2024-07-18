@@ -1,13 +1,12 @@
-import { Env, QMessage } from './types'
 import { formatPrivateKey } from './formatPrivateKey'
-import { silentPush } from './silentPush'
 import { pushNotification } from './pushNotification'
+import { Env, QMessage } from './types'
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     if (request.method === 'POST') {
-      const message = await request.json()
-      //@ts-ignore
+      const message = await request.json() as QMessage
+
       const { event, deviceToken, body, title, subtitle, badge, threadId, voip } = message
       const privateKey = formatPrivateKey(env.P8)
       await pushNotification(
@@ -48,7 +47,7 @@ export default {
           voip,
         )
 
-        await silentPush(deviceToken, privateKey, env)
+        //await silentPush(deviceToken, privateKey, env)
 
         message.ack()
       } catch (error) {
